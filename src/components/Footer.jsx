@@ -46,8 +46,8 @@ export default function Footer() {
             <p className="text-slate-400 text-sm leading-relaxed mb-3">
               لديك اقتراح أو تريد إضافة لعبة جديدة؟ تواصل معنا عبر البريد الإلكتروني.
             </p>
-            <a href="mailto:info@safegaming.com" className="text-blue-400 hover:text-blue-300 transition-colors text-sm">
-              info@safegaming.com
+            <a href="mailto:tmrmahfouz@gmail.com" className="text-blue-400 hover:text-blue-300 transition-colors text-sm">
+              tmrmahfouz@gmail.com
             </a>
           </div>
         </div>
