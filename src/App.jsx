@@ -109,7 +109,7 @@ function App() {
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-8">
               منصة <span className="gradient-text">مستقلة وموثوقة</span>
             </h2>
-            <div className="glass-card rounded-3xl p-6 sm:p-10 border border-white/5">
+            <div className="glass-card rounded-3xl p-6 sm:p-10 border border-white/5 mb-10">
               <p className="text-slate-300 text-sm sm:text-base leading-loose">
                 <strong className="text-white">صمام الأمان</strong> هي منصة مستقلة متخصصة في تحليل مستوى أمان الألعاب الإلكترونية
                 ومساعدة الآباء والأمهات على اتخاذ قرارات مستنيرة بشأن ما يلعبه أطفالهم. نقوم بتحليل كل لعبة من
@@ -127,6 +127,46 @@ function App() {
                     <div className="text-slate-400 text-xs mt-1">{stat.label}</div>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* Team Section */}
+            <div className="mt-12">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold mb-4">
+                <span>فريق العمل والمطورون</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">
+                نخبة من معلمي <span className="text-emerald-400">تكنولوجيا المعلومات والاتصالات</span>
+              </h3>
+              <p className="text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto mb-8">
+                إدارة السنطة التعليمية • مديرية التربية والتعليم بمحافظة الغربية
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                {[
+                  { name: 'أ/ تامر محمد عبدالمنصف محمد محفوظ', role: 'معلم تكنولوجيا المعلومات والاتصالات' },
+                  { name: 'أ/ أحمد يحي إبراهيم شمله', role: 'معلم تكنولوجيا المعلومات والاتصالات' },
+                  { name: 'أ/ أحمد محمد على سليمان', role: 'معلم تكنولوجيا المعلومات والاتصالات' },
+                ].map((teacher, i) => (
+                  <motion.div key={teacher.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: i * 0.15 }}
+                    className="glass-card rounded-2xl p-5 border border-emerald-500/20 hover:border-emerald-500/40 transition-all text-right group relative overflow-hidden">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-4 group-hover:scale-110 transition-transform">
+                      <span className="text-lg">👨‍🏫</span>
+                    </div>
+                    <h4 className="text-white font-bold text-sm sm:text-base leading-snug mb-1">{teacher.name}</h4>
+                    <p className="text-slate-400 text-xs">{teacher.role}</p>
+                    <p className="text-slate-500 text-[11px] mt-2">إدارة السنطة التعليمية - الغربية</p>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Passion Card */}
+              <div className="glass-card rounded-2xl p-6 sm:p-8 border border-blue-500/20 text-center max-w-3xl mx-auto relative overflow-hidden">
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
+                <p className="text-slate-200 text-sm sm:text-base leading-relaxed font-medium">
+                  💡 <strong className="text-blue-400">رؤيتنا ورسالتنا:</strong> لدينا شغف بتطوير المواقع التعليمية والتي تخدم العملية التعليمية، وكذلك المواقع التي تحمي أطفالنا وشبابنا من التصيد والاحتيال الإلكتروني والتصدي للمخاطر الرقمية.
+                </p>
               </div>
             </div>
           </motion.div>
