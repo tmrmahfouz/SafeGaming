@@ -112,13 +112,16 @@ SafeGames/
     ├── assets/
     │   └── hero.png           # صورة القسم الرئيسي
     ├── components/
-    │   ├── Header.jsx         # شريط التنقل العلوي
-    │   ├── SearchBar.jsx      # حقل البحث عن الألعاب
+    │   ├── Header.jsx         # شريط التنقل العلوي مع زر إعدادات AI
+    │   ├── SearchBar.jsx      # حقل البحث التفاعلي بحالة التحميل
     │   ├── RiskCard.jsx       # بطاقة عرض المخاطر
-    │   ├── GameResultModal.jsx # نافذة نتائج تحليل اللعبة
+    │   ├── GameResultModal.jsx # نافذة نتائج تحليل اللعبة مع شارة AI
+    │   ├── ApiKeyModal.jsx    # نافذة ضبط وتجربة مفتاح Gemini API
     │   └── Footer.jsx         # التذييل
+    ├── services/
+    │   └── aiGameService.js   # خدمة الذكاء الاصطناعي (Gemini API & Fallback & Cache)
     └── data/
-        └── gamesData.js       # قاعدة بيانات الألعاب (26 لعبة/تطبيق)
+        └── gamesData.js       # قاعدة بيانات الألعاب المحلية والمقترحة
 ```
 
 ---

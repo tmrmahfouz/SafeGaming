@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Shield, Menu, X } from 'lucide-react';
+import { Shield, Menu, X, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function Header() {
+export default function Header({ onOpenApiKeyModal }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -44,13 +44,30 @@ export default function Header() {
               {link.label}
             </a>
           ))}
+          <button
+            onClick={onOpenApiKeyModal}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-blue-500/10 border border-blue-500/30 text-blue-300 hover:bg-blue-500/20 hover:text-white transition-all cursor-pointer"
+            id="open-api-key-button"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+            <span>مفتاح AI</span>
+          </button>
         </nav>
 
         {/* Mobile Menu Button */}
-        <button onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors" aria-label="القائمة">
-          {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          <button
+            onClick={onOpenApiKeyModal}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-blue-500/10 border border-blue-500/30 text-blue-300 hover:bg-blue-500/20"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+            <span>مفتاح AI</span>
+          </button>
+          <button onClick={() => setMenuOpen(!menuOpen)}
+            className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors" aria-label="القائمة">
+            {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -72,3 +89,4 @@ export default function Header() {
     </header>
   );
 }
+

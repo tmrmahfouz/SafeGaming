@@ -5,25 +5,35 @@ import Header from './components/Header';
 import SearchBar from './components/SearchBar';
 import RiskCard from './components/RiskCard';
 import GameResultModal from './components/GameResultModal';
+import ApiKeyModal from './components/ApiKeyModal';
 import Footer from './components/Footer';
 import gamesData from './data/gamesData';
+import { searchGameWithAI } from './services/aiGameService';
 
 function App() {
   const [selectedGame, setSelectedGame] = useState(null);
   const [notFound, setNotFound] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [apiKeyModalOpen, setApiKeyModalOpen] = useState(false);
 
-  const handleSearch = (query) => {
+  const handleSearch = async (query) => {
+    if (!query.trim()) return;
     setNotFound(false);
-    const q = query.toLowerCase();
-    const found = gamesData.find(
-      (g) => g.name.toLowerCase().includes(q) || g.nameAr.includes(query)
-    );
-    if (found) {
-      setSelectedGame(found);
-      setNotFound(false);
-    } else {
-      setSelectedGame(null);
+    setIsSearching(true);
+    try {
+      const result = await searchGameWithAI(query);
+      if (result) {
+        setSelectedGame(result);
+        setNotFound(false);
+      } else {
+        setSelectedGame(null);
+        setNotFound(true);
+      }
+    } catch (err) {
+      console.error('Search error:', err);
       setNotFound(true);
+    } finally {
+      setIsSearching(false);
     }
   };
 
@@ -36,7 +46,7 @@ function App() {
 
   return (
     <div className="min-h-screen font-tajawal w-full max-w-full">
-      <Header />
+      <Header onOpenApiKeyModal={() => setApiKeyModalOpen(true)} />
 
       {/* ===== Hero Section ===== */}
       <section id="hero" className="relative hero-gradient" style={{ paddingTop: '150px', paddingBottom: '100px' }}>
@@ -49,7 +59,7 @@ function App() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm mb-6">
               <ShieldCheck className="w-4 h-4" />
-              <span>منصة حماية رقمية للأطفال</span>
+              <span>منصة حماية رقمية للأطفال مدعومة بالذكاء الاصطناعي</span>
             </div>
 
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-5">
@@ -58,18 +68,18 @@ function App() {
             </h2>
 
             <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto mb-8 leading-relaxed text-center">
-              ابحث عن أي لعبة واكتشف مستوى أمانها. نساعدك على فهم المخاطر واتخاذ القرار الصحيح لحماية أبنائك.
+              ابحث عن <strong className="text-blue-300">أي لعبة على الويب</strong> واكتشف مستوى أمانها فوراً بواسطة الذكاء الاصطناعي. نساعدك على فهم المخاطر واتخاذ القرار الصحيح لحماية أبنائك.
             </p>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}
             className="flex flex-col items-center">
-            <SearchBar onSearch={handleSearch} />
+            <SearchBar onSearch={handleSearch} isLoading={isSearching} />
             {notFound && (
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                 className="mt-5 inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-sm" id="not-found-message">
                 <AlertTriangle className="w-5 h-5 flex-shrink-0" />
-                <span>هذه اللعبة غير مسجلة لدينا حالياً، سيقوم فريقنا بفحصها قريباً.</span>
+                <span>تعذر تحليل هذه اللعبة حالياً، يرجى كتابة اسمها بشكل واضح أو إعادة المحاولة.</span>
               </motion.div>
             )}
           </motion.div>
@@ -77,10 +87,10 @@ function App() {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.6 }}
             className="mt-6 flex flex-wrap items-center justify-center gap-2">
             <span className="text-slate-500 text-sm">جرّب البحث عن:</span>
-            {gamesData.slice(0, 4).map((g) => (
-              <button key={g.id} onClick={() => handleSearch(g.name)}
-                className="px-3 py-1.5 rounded-full text-xs bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:border-blue-500/30 hover:bg-blue-500/10 transition-all cursor-pointer">
-                {g.icon} {g.name}
+            {['Valorant', 'Minecraft', 'FC 24', 'Clash of Clans', 'Genshin Impact'].map((gName) => (
+              <button key={gName} onClick={() => handleSearch(gName)} disabled={isSearching}
+                className="px-3.5 py-1.5 rounded-full text-xs bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:border-blue-500/40 hover:bg-blue-500/10 transition-all cursor-pointer disabled:opacity-50">
+                ✨ {gName}
               </button>
             ))}
           </motion.div>
@@ -103,14 +113,14 @@ function App() {
               <p className="text-slate-300 text-sm sm:text-base leading-loose">
                 <strong className="text-white">صمام الأمان</strong> هي منصة مستقلة متخصصة في تحليل مستوى أمان الألعاب الإلكترونية
                 ومساعدة الآباء والأمهات على اتخاذ قرارات مستنيرة بشأن ما يلعبه أطفالهم. نقوم بتحليل كل لعبة من
-                أربعة محاور أساسية: الخصوصية، التواصل مع الغرباء، المخاطر المالية، والإدمان الرقمي.
+                أربعة محاور أساسية: الخصوصية، التواصل مع الغرباء، المخاطر المالية، والإدمان الرقمي بواسطة الذكاء الاصطناعي.
               </p>
               <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {[
-                  { num: '26+', label: 'لعبة تم تحليلها' },
+                  { num: 'كافة الألعاب', label: 'متاح للتحليل على الويب' },
                   { num: '4', label: 'محاور تقييم' },
                   { num: '100%', label: 'مجاني ومستقل' },
-                  { num: '24/7', label: 'متاح دائماً' },
+                  { num: '24/7', label: 'ذكاء اصطناعي متاح دائماً' },
                 ].map((stat) => (
                   <div key={stat.label} className="text-center p-2">
                     <div className="text-xl sm:text-2xl font-black gradient-text">{stat.num}</div>
@@ -156,19 +166,19 @@ function App() {
         <div className="section-container text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }} transition={{ duration: 0.6 }}>
-            <span className="text-emerald-400 text-sm font-semibold tracking-wider mb-3 block">ابحث الآن</span>
+            <span className="text-emerald-400 text-sm font-semibold tracking-wider mb-3 block">ابحث الآن بالذكاء الاصطناعي</span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3">
-              اكتشف مستوى أمان <span className="gradient-text">أي لعبة</span>
+              اكتشف مستوى أمان <span className="gradient-text">أي لعبة على الويب</span>
             </h2>
             <p className="text-slate-400 text-sm max-w-xl mx-auto mb-8">
-              اكتب اسم اللعبة التي يلعبها طفلك واحصل على تقرير أمان شامل ونصائح عملية
+              اكتب اسم اللعبة التي يلعبها طفلك واحصل على تقرير أمان شامل ونائح عملية فوراً
             </p>
             <div className="flex justify-center w-full">
-              <SearchBar onSearch={handleSearch} />
+              <SearchBar onSearch={handleSearch} isLoading={isSearching} />
             </div>
 
             <div className="mt-10">
-              <p className="text-slate-500 text-sm mb-5">أو اختر من الألعاب المُحلّلة</p>
+              <p className="text-slate-500 text-sm mb-5">أو اختر من الألعاب الأكثر بحثاً</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {gamesData.map((game) => (
                   <button key={game.id} onClick={() => { setSelectedGame(game); setNotFound(false); }}
@@ -192,6 +202,8 @@ function App() {
       <Footer />
 
       {selectedGame && <GameResultModal game={selectedGame} onClose={() => setSelectedGame(null)} />}
+
+      <ApiKeyModal isOpen={apiKeyModalOpen} onClose={() => setApiKeyModalOpen(false)} />
     </div>
   );
 }

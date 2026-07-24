@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShieldCheck, ShieldAlert, ShieldX, CheckCircle, AlertTriangle, XCircle } from 'lucide-react';
+import { X, ShieldCheck, ShieldAlert, ShieldX, CheckCircle, AlertTriangle, XCircle, Sparkles } from 'lucide-react';
 
 const safetyConfig = {
   safe: { color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', label: 'آمنة', Icon: ShieldCheck },
@@ -23,7 +23,7 @@ const riskLabels = {
 
 export default function GameResultModal({ game, onClose }) {
   if (!game) return null;
-  const safety = safetyConfig[game.overallSafety];
+  const safety = safetyConfig[game.overallSafety] || safetyConfig['caution'];
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -77,9 +77,17 @@ export default function GameResultModal({ game, onClose }) {
                   <safety.Icon className="w-4 h-4" />
                   {safety.label}
                 </span>
+
+                {game.isAiGenerated && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/15 border border-blue-500/30 text-blue-300 text-xs font-semibold">
+                    <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+                    <span>تم التحليل بالذكاء الاصطناعي</span>
+                  </span>
+                )}
               </div>
               <p className="text-slate-300 mt-4 text-xs sm:text-sm leading-relaxed">{game.description}</p>
             </div>
+
 
             {/* Risk Details */}
             <div className="p-5 sm:p-8 space-y-5">
